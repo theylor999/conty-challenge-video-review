@@ -2,11 +2,11 @@
 
 API de revisão de entregas de campanha: versões de peças (roteiro, vídeo, capa, legenda), comentários presos a um segundo do vídeo e a regra que decide quando a entrega pode ser aprovada.
 
-A regra central: **a entrega só aprova quando cada peça que a campanha exige tem a versão atual aprovada**. Peça nova numa entrega já aprovada desfaz a aprovação.
+A regra central: **a entrega só aprova quando cada peça que a campanha exige tem a versão atual aprovada**. Versão nova de uma peça exigida, numa entrega já aprovada, desfaz a aprovação.
 
 ## Como rodar
 
-Node 22+.
+Node 22.12 ou mais novo.
 
 ```
 npm install
@@ -98,7 +98,7 @@ Efeito no pagamento (modelo mínimo, sem pagamento real):
 - Aprovar a entrega registra `payment_released`.
 - Versão nova de peça obrigatória numa entrega aprovada registra `approval_invalidated` e `payment_hold`. O status do pagamento vira `on_hold`.
 - Enquanto a nova versão não for aprovada e a entrega reaprovada, nada é liberado.
-- Reaprovar registra `payment_released` outra vez, com a mesma `payout_key` (`delivery:<id>`). Quem paga de fato deve usar essa chave para não pagar duas vezes.
+- Reaprovar registra `payment_released` outra vez, com a mesma `payout_key` (`delivery:<id>`). `payment_released` quer dizer "liberado para repasse", não "pago": dois eventos com a mesma chave são a mesma liberação confirmada de novo, nunca dois pagamentos. Quem paga de fato deve usar essa chave para não pagar duas vezes.
 - Versão nova de peça que a campanha não exige não mexe na aprovação.
 
 O histórico nunca é apagado: `GET /deliveries/:id` devolve todos os eventos em ordem.
@@ -186,11 +186,11 @@ $ curl -X POST localhost:3917/deliveries/dlv_1/approve $B
 npm test
 ```
 
-Vitest, 41 testes, sem rede: o app roda em memória com relógio injetado.
+Vitest, 45 testes, sem rede: o app roda em memória com relógio injetado.
 
 - `required-pieces`: 422 com peça faltando e peça aguardando revisão, peça não exigida que não bloqueia, campanha só de vídeo sem roteiro, duas campanhas com exigências diferentes no mesmo código.
 - `versions`: versão nova substitui a atual e a antiga continua legível, 409 ao revisar versão antiga, validação do conteúdo por peça.
-- `approval-invalidation`: entrega aprovada recebe versão nova numa peça, deixa de estar aprovada, pagamento em espera, reaprovação funciona; peça não exigida não invalida.
+- `approval-invalidation`: entrega aprovada recebe versão nova numa peça, deixa de estar aprovada, pagamento em espera, reaprovação funciona, para cada um dos quatro tipos de peça; peça não exigida não invalida.
 - `comments`: comentário preso a um segundo, visível na versão onde foi feito e ausente na seguinte; segundo além da duração rejeitado; limites 0 e duração.
 - `access` e `delivery-status`: permissões por papel e dono, e a função pura de status.
 
