@@ -1,10 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { PIECE_KINDS, type PieceKind } from "../src/domain/types.ts";
 import { setup } from "./helpers.ts";
 
 const types = (history: { type: string }[]) => history.map((e) => e.type);
 
 describe("new version on an approved delivery", () => {
-  async function approvedDelivery(required: ("video" | "cover" | "script")[]) {
+  async function approvedDelivery(required: PieceKind[]) {
     const t = setup();
     const { deliveryId } = await t.start(required);
     const versions: Record<string, string> = {};
@@ -72,6 +73,24 @@ describe("new version on an approved delivery", () => {
     // a second upload on an already invalidated approval records no second invalidation
     expect(types(history).filter((x: string) => x === "approval_invalidated")).toHaveLength(1);
     expect(types(history).filter((x: string) => x === "payment_hold")).toHaveLength(1);
+  });
+
+  it.each(PIECE_KINDS)("a new %s version needs its own approval and a new delivery approval", async (kind) => {
+    const { t, deliveryId, versions } = await approvedDelivery([...PIECE_KINDS]);
+    const next = await t.upload(deliveryId, kind);
+
+    const invalid = (await t.get(`/deliveries/${deliveryId}`)).body;
+    expect(invalid.status).toBe("in_production");
+    expect(invalid.approval).toMatchObject({ valid: false, snapshot: versions });
+
+    await t.approveVersion(next);
+    const mid = (await t.get(`/deliveries/${deliveryId}`)).body;
+    expect(mid.status).toBe("ready_for_approval");
+    expect(mid.approval.valid).toBe(false);
+
+    const again = await t.approveDelivery(deliveryId);
+    expect(again.body.status).toBe("approved");
+    expect(again.body.approval.snapshot).toEqual({ ...versions, [kind]: next });
   });
 
   it("a version of a piece the campaign does not require leaves the approval intact", async () => {
