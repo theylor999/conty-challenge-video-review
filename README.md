@@ -105,7 +105,7 @@ O histórico nunca é apagado: `GET /deliveries/:id` devolve todos os eventos em
 
 ## Comentários por segundo
 
-Em versão de vídeo, `at_second` é obrigatório, numérico (decimal vale) e vai de 0 até a duração informada, inclusive. Fora disso, 422. Nas outras peças o comentário não tem segundo, e enviar `at_second` é erro.
+Em versão de vídeo, `at_second` é obrigatório, numérico (decimal vale) e vai de 0 até a duração informada, inclusive. Fora disso, 422. Nas outras peças o comentário não tem segundo, e enviar `at_second` é erro (inclusive `null`).
 
 O comentário pertence à versão onde foi feito. A versão nova começa sem comentários; `previous_versions_comments_count` só diz quantos existem nas anteriores. Versão antiga fica só para leitura: comentar ou revisar nela devolve 409 `version_not_current`.
 

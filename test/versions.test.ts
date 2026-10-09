@@ -54,6 +54,9 @@ describe("piece versions", () => {
     expect(res.body.error).toMatchObject({ code: "version_not_current", current_version_id: v2, current_version: 2 });
     const stale = await t.call("POST", `/versions/${v1}/request-changes`, { role: "brand", id: "brand_1" }, {});
     expect(stale.status).toBe(409);
+    // staleness is reported even when the note is also invalid
+    const staleBadNote = await t.call("POST", `/versions/${v1}/request-changes`, { role: "brand", id: "brand_1" }, { note: 42 });
+    expect(staleBadNote.body.error.code).toBe("version_not_current");
     expect((await t.get(`/versions/${v1}`)).body.status).toBe("pending_review");
   });
 

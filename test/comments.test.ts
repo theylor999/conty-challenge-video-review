@@ -74,8 +74,10 @@ describe("comments pinned to a second", () => {
     const ok = await t.call("POST", `/versions/${script}/comments`, BRAND, { body: "Trocar o gancho" });
     expect(ok.status).toBe(201);
     expect(ok.body.at_second).toBeNull();
-    const bad = await t.call("POST", `/versions/${script}/comments`, BRAND, { at_second: 3, body: "x" });
-    expect(bad.status).toBe(422);
+    for (const at_second of [3, null]) {
+      const bad = await t.call("POST", `/versions/${script}/comments`, BRAND, { at_second, body: "x" });
+      expect(bad.status).toBe(422);
+    }
   });
 
   it("does not accept comments on a replaced version", async () => {

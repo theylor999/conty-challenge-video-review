@@ -145,7 +145,7 @@ export function parseComment(
     } else {
       atSecond = at;
     }
-  } else if (at !== undefined && at !== null) {
+  } else if (at !== undefined) {
     errors.push({ field: "at_second", message: `só comentários de vídeo têm segundo; esta peça é ${version.kind}` });
   }
   if (errors.length > 0) throw validationFailed(errors);

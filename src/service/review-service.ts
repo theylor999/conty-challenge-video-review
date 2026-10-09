@@ -174,8 +174,8 @@ export class ReviewService {
     const { delivery, campaign } = this.loadDelivery(version.deliveryId);
     this.requireBrandOf(actor, campaign, "revisar versões");
 
-    const note = decision === "request_changes" ? parseReviewNote(raw) : null;
     this.assertCurrent(version);
+    const note = decision === "request_changes" ? parseReviewNote(raw) : null;
     if (version.status !== "pending_review") {
       throw new AppError(
         "conflict",

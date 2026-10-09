@@ -62,9 +62,12 @@ describe("new version on an approved delivery", () => {
   it("no payment_released is emitted while the new version is unapproved", async () => {
     const { t, deliveryId } = await approvedDelivery(["cover"]);
     await t.upload(deliveryId, "cover");
-    await t.upload(deliveryId, "cover");
+    const v3 = await t.upload(deliveryId, "cover");
 
-    const history = (await t.get(`/deliveries/${deliveryId}`)).body.history;
+    const delivery = (await t.get(`/deliveries/${deliveryId}`)).body;
+    const history = delivery.history;
+    expect(delivery.pieces.find((p: { piece: string }) => p.piece === "cover").current_version).toMatchObject({ id: v3, version: 3 });
+    expect(types(history).filter((x: string) => x === "version_submitted")).toHaveLength(3);
     expect(types(history).filter((x: string) => x === "payment_released")).toHaveLength(1);
     // a second upload on an already invalidated approval records no second invalidation
     expect(types(history).filter((x: string) => x === "approval_invalidated")).toHaveLength(1);
@@ -77,6 +80,7 @@ describe("new version on an approved delivery", () => {
     await t.upload(deliveryId, "cover");
 
     const d = (await t.get(`/deliveries/${deliveryId}`)).body;
+    expect(d.pieces.filter((p: { versions_count: number }) => p.versions_count === 1).map((p: { piece: string }) => p.piece)).toEqual(["script", "video", "cover"]);
     expect(d.status).toBe("approved");
     expect(d.payment.status).toBe("released");
     expect(types(d.history)).not.toContain("approval_invalidated");

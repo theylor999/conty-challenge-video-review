@@ -61,6 +61,7 @@ export function setup() {
     },
     async upload(deliveryId: string, kind: PieceKind, content: Json = CONTENT[kind]) {
       const r = await call("POST", `/deliveries/${deliveryId}/pieces/${kind}/versions`, CREATOR, content);
+      if (r.status !== 201) throw new Error(`upload of ${kind} failed: ${r.status} ${JSON.stringify(r.body)}`);
       return r.body.id as string;
     },
     async approveVersion(versionId: string) {
