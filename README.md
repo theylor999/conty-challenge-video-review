@@ -196,7 +196,7 @@ Vitest, 41 testes, sem rede: o app roda em memória com relógio injetado.
 
 ## Uso de IA
 
-O código e os testes foram escritos com um assistente de IA (Claude), que eu dirigi. Eu defini o escopo e as decisões de modelo e revisei o resultado.
+Usei mais de um modelo de IA, cada um num papel: Claude Opus 5.5 para planejar, dividir o trabalho e conferir as entregas; Claude Sonnet 5.5 para escrever o código e os testes; e GPT-6.1 Sol para uma revisão independente contra o enunciado, cujos achados válidos entraram como correção. Eu dirigi o processo, defini o escopo e as decisões de modelo e revisei o resultado.
 
 O que eu revisei e ajustei:
 
