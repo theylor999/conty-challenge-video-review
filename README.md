@@ -196,7 +196,7 @@ Vitest, 41 testes, sem rede: o app roda em memória com relógio injetado.
 
 ## Uso de IA
 
-Escrevi o código e os testes com um assistente de código de IA (Claude), que eu dirigi. Eu defini o escopo e as decisões de modelo, e revisei o resultado.
+O código e os testes foram escritos com um assistente de IA (Claude), que eu dirigi. Eu defini o escopo e as decisões de modelo e revisei o resultado.
 
 O que eu revisei e ajustei:
 
