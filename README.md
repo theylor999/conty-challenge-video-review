@@ -190,7 +190,7 @@ Vitest, 45 testes, sem rede: o app roda em memória com relógio injetado.
 
 - `required-pieces`: 422 com peça faltando e peça aguardando revisão, peça não exigida que não bloqueia, campanha só de vídeo sem roteiro, duas campanhas com exigências diferentes no mesmo código.
 - `versions`: versão nova substitui a atual e a antiga continua legível, 409 ao revisar versão antiga, validação do conteúdo por peça.
-- `approval-invalidation`: entrega aprovada recebe versão nova numa peça, deixa de estar aprovada, pagamento em espera, reaprovação funciona, para cada um dos quatro tipos de peça; peça não exigida não invalida.
+- `approval-invalidation`: entrega aprovada recebe versão nova numa peça, deixa de estar aprovada, pagamento em espera, reaprovação funciona; invalidação e reaprovação também testadas para cada um dos quatro tipos de peça; peça não exigida não invalida.
 - `comments`: comentário preso a um segundo, visível na versão onde foi feito e ausente na seguinte; segundo além da duração rejeitado; limites 0 e duração.
 - `access` e `delivery-status`: permissões por papel e dono, e a função pura de status.
 
